@@ -383,7 +383,9 @@
     }
 
     try{
-      const url = `https://www.googleapis.com/customsearch/v1?key=${encodeURIComponent(cfg.key)}&cx=${encodeURIComponent(cfg.cx)}&q=${encodeURIComponent(currentQuery)}&start=${currentStart}`;
+      const url = `https://www.google.com/search?q=${encodeURIComponent(currentQuery)}`;
+window.open(url, '_blank');
+return;
       const res = await fetch(url);
       const data = await res.json();
 
