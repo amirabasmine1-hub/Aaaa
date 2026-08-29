@@ -135,6 +135,45 @@
     border-top:1px solid var(--line);
   }
   footer b{color:var(--text);}
+
+  /* ---- results view ---- */
+  #resultsWrap{ display:none; width:100%; max-width:720px; margin-top:10px; }
+  .results-header{
+    display:flex; align-items:center; gap:12px; margin-bottom:22px;
+  }
+  .results-header .logo-mini{
+    font-weight:900; font-size:22px;
+    background:linear-gradient(90deg, var(--violet), var(--cyan));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    cursor:pointer; flex-shrink:0;
+  }
+  .results-count{
+    font-family:'JetBrains Mono', monospace; font-size:11.5px; color:var(--muted);
+    margin-bottom:18px;
+  }
+  .result-card{ padding:16px 4px; border-bottom:1px solid var(--line); }
+  .result-card a.link{
+    color:var(--cyan); font-family:'JetBrains Mono', monospace; font-size:12px;
+    text-decoration:none; display:block; margin-bottom:5px; direction:ltr; text-align:right;
+    opacity:.8;
+  }
+  .result-card h3{ margin:0 0 6px; font-size:18px; font-weight:600; }
+  .result-card h3 a{ color:var(--text); text-decoration:none; }
+  .result-card h3 a:hover{ text-decoration:underline; color:var(--violet); }
+  .result-card p{ margin:0; color:#c2c1cf; font-size:14px; line-height:1.9; }
+  .state-msg{ text-align:center; color:var(--muted); padding:40px 0; font-family:'JetBrains Mono', monospace; font-size:13px; }
+  .spinner{
+    width:26px; height:26px; border-radius:50%;
+    border:3px solid var(--line); border-top-color:var(--cyan);
+    margin:0 auto 14px; animation:spin .8s linear infinite;
+  }
+  @keyframes spin{ to{ transform:rotate(360deg); } }
+  .fallback-note{
+    text-align:center; font-size:11px; color:var(--muted); margin-top:18px;
+    font-family:'JetBrains Mono', monospace;
+  }
+  .fallback-note a{ color:var(--cyan); }
+
   @media (max-width:480px){
     .search-box{padding:13px 16px;}
     header{padding:16px 18px;}
@@ -152,60 +191,163 @@
 </header>
 
 <main>
-  <div class="logo">amirabas<span> internet</span></div>
-  <div class="tagline">هر چی تو ذهنته بنویس، <b>از کل دنیا</b> برات پیدا می‌کنیم</div>
+  <div id="home">
+    <div class="logo">amirabas<span> internet</span></div>
+    <div class="tagline">هر چی تو ذهنته بنویس، <b>از کل دنیا</b> برات پیدا می‌کنیم</div>
 
-  <form id="searchForm">
-    <div class="search-box">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-        <circle cx="11" cy="11" r="7"></circle>
-        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-      </svg>
-      <input id="q" type="text" autocomplete="off" placeholder="دنبال چی می‌گردی؟" autofocus>
-    </div>
-    <div class="btn-row">
-      <button type="submit" class="action primary">جستجو در amirabas</button>
-      <button type="button" id="lucky" class="action">🎲 شانس بیارم</button>
-    </div>
-  </form>
+    <form id="searchForm">
+      <div class="search-box">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input id="q" type="text" autocomplete="off" placeholder="دنبال چی می‌گردی؟" autofocus>
+      </div>
+      <div class="btn-row">
+        <button type="submit" class="action primary">جستجو در amirabas</button>
+        <button type="button" id="lucky" class="action">🎲 شانس بیارم</button>
+      </div>
+    </form>
 
-  <div class="chips">
-    <div class="chip" data-q="اخبار امروز">اخبار امروز</div>
-    <div class="chip" data-q="آموزش برنامه نویسی">آموزش‌برنامه‌نویسی</div>
-    <div class="chip" data-q="فیلم های جدید">فیلم‌های جدید</div>
-    <div class="chip" data-q="آب و هوا">آب و هوا</div>
-    <div class="chip" data-q="بازی های آنلاین">بازی‌های آنلاین</div>
+    <div class="chips">
+      <div class="chip" data-q="اخبار امروز">اخبار امروز</div>
+      <div class="chip" data-q="آموزش برنامه نویسی">آموزش‌برنامه‌نویسی</div>
+      <div class="chip" data-q="فیلم های جدید">فیلم‌های جدید</div>
+      <div class="chip" data-q="آب و هوا">آب و هوا</div>
+      <div class="chip" data-q="بازی های آنلاین">بازی‌های آنلاین</div>
+    </div>
+  </div>
+
+  <div id="resultsWrap">
+    <div class="results-header">
+      <div class="logo-mini" id="backHome">amirabas</div>
+      <div class="search-box" style="flex:1; padding:9px 16px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input id="q2" type="text" autocomplete="off" placeholder="دنبال چی می‌گردی؟">
+      </div>
+    </div>
+    <div class="results-count" id="resultsCount"></div>
+    <div id="resultsList"></div>
+    <div class="fallback-note" id="fallbackNote" style="display:none;"></div>
   </div>
 </main>
 
 <footer>
-  ساخته‌شده با 💜 — <b>amirabas internet</b> نتایج واقعی گوگل را برایت می‌آورد
+  ساخته‌شده با 💜 — <b>amirabas internet</b> نتایج واقعی را از سراسر وب برایت می‌آورد
 </footer>
 
 <script>
-  const form = document.getElementById('searchForm');
+  const home = document.getElementById('home');
+  const resultsWrap = document.getElementById('resultsWrap');
+  const resultsList = document.getElementById('resultsList');
+  const resultsCount = document.getElementById('resultsCount');
+  const fallbackNote = document.getElementById('fallbackNote');
   const input = document.getElementById('q');
+  const input2 = document.getElementById('q2');
 
-  function goSearch(query){
-    if(!query || !query.trim()) return;
-    const url = "https://www.google.com/search?q=" + encodeURIComponent(query.trim());
-    window.open(url, "_blank");
+  // چند سرور پشتیبان — اگه یکی جواب نداد، خودش می‌ره سراغ بعدی
+  const INSTANCES = [
+    'https://paulgo.io',
+    'https://opnxng.com',
+    'https://priv.au'
+  ];
+
+  function directGoogleSearch(query){
+    window.open("https://www.google.com/search?q=" + encodeURIComponent(query.trim()), "_blank");
   }
 
-  form.addEventListener('submit', (e) => {
+  async function tryInstance(base, query){
+    const url = `${base}/search?q=${encodeURIComponent(query)}&format=json`;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 6000);
+    try {
+      const res = await fetch(url, { signal: controller.signal, headers: { 'Accept': 'application/json' } });
+      clearTimeout(timeout);
+      if(!res.ok) return null;
+      const data = await res.json();
+      if(!data || !Array.isArray(data.results)) return null;
+      return data;
+    } catch(e){
+      clearTimeout(timeout);
+      return null;
+    }
+  }
+
+  async function runSearch(query){
+    if(!query || !query.trim()) return;
+    query = query.trim();
+
+    home.style.display = 'none';
+    resultsWrap.style.display = 'block';
+    input2.value = query;
+    fallbackNote.style.display = 'none';
+    resultsCount.textContent = '';
+    resultsList.innerHTML = '<div class="state-msg"><div class="spinner"></div>در حال جستجو در amirabas...</div>';
+
+    let data = null;
+    for(const base of INSTANCES){
+      data = await tryInstance(base, query);
+      if(data) break;
+    }
+
+    if(!data){
+      // هیچ سروری جواب نداد → بازکردن نتیجه‌ی واقعی گوگل در تب جدید
+      resultsList.innerHTML = `<div class="state-msg">
+        سرورهای جستجو الان شلوغن. داریم نتایج گوگل رو در یک تب جدید برات باز می‌کنیم...
+      </div>`;
+      setTimeout(() => directGoogleSearch(query), 900);
+      return;
+    }
+
+    const items = data.results.slice(0, 15);
+    if(items.length === 0){
+      resultsList.innerHTML = '<div class="state-msg">چیزی پیدا نشد. یک عبارت دیگه امتحان کن.</div>';
+      return;
+    }
+
+    resultsCount.textContent = `${items.length} نتیجه پیدا شد`;
+    resultsList.innerHTML = '';
+    items.forEach(item => {
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      let displayLink = '';
+      try { displayLink = new URL(item.url).hostname; } catch(e){ displayLink = item.url; }
+      card.innerHTML = `
+        <a class="link" href="${item.url}" target="_blank">${displayLink}</a>
+        <h3><a href="${item.url}" target="_blank">${item.title || item.url}</a></h3>
+        <p>${item.content || ''}</p>
+      `;
+      resultsList.appendChild(card);
+    });
+
+    fallbackNote.style.display = 'block';
+    fallbackNote.innerHTML = `نتیجه‌ی بهتر می‌خوای؟ <a href="https://www.google.com/search?q=${encodeURIComponent(query)}" target="_blank">جستجو در خود گوگل</a>`;
+  }
+
+  document.getElementById('searchForm').addEventListener('submit', (e) => {
     e.preventDefault();
-    goSearch(input.value);
+    runSearch(input.value);
+  });
+
+  document.getElementById('backHome').addEventListener('click', () => {
+    resultsWrap.style.display = 'none';
+    home.style.display = 'block';
+  });
+
+  input2.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter') runSearch(input2.value);
   });
 
   document.getElementById('lucky').addEventListener('click', () => {
-    const q = input.value.trim() || "چیزی جالب";
-    window.open("https://www.google.com/search?q=" + encodeURIComponent(q) + "&btnI=1", "_blank");
+    runSearch(input.value.trim() || 'چیزی جالب');
   });
 
   document.querySelectorAll('.chip').forEach(chip => {
     chip.addEventListener('click', () => {
       input.value = chip.dataset.q;
-      goSearch(chip.dataset.q);
+      runSearch(chip.dataset.q);
     });
   });
 </script>
